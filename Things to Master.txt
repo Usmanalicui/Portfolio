@@ -1,0 +1,29 @@
+				Have a Goal About a DataSet ✅
+			    Know what to find and how to find ✅
+			Read The Dataset and Understand it thoroughly ✅
+		Ignore Warnings and set nessacry options for the data set ✅
+df.info() ✅
+df.describe() ✅
+df.shape ✅
+Data Cleaning ✅
+	Removing all missing rows and cloumns from the data ✅
+	Renaming Columns that aren't renamed good ✅
+	Removing Duplicates ✅
+	Removing outliers ✅
+	Fixing Formats ✅
+		fixing values if something happened to em ✅
+	Changing names of unique values if they are not understandable or good ✅
+	filling Missing values ✅
+		filling categorical with mode and numerical with mean ✅
+Data Preparing ✅
+	dividing data into groups for better understanding ✅
+	making groups of data and having em as new data set ✅
+
+(Better option make functions than call them for better compability) 
+
+EDA ✅
+	Start Doing EDA of it ✅
+	Visualize what u have been looking for ✅
+	start reading the charts and summarizing there results ✅
+	write the readings that u have done from the charts ✅
+	make a summary after doing all ✅
