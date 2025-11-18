@@ -1,0 +1,10 @@
+Notes:
+prices=
+For outliers ones 2018 sales
+	(3-4 rise
+	4-5 more rise
+	5-6 drop)
+Appliances(lowest) Sales ~20k from 3-7
+computing(2nd lowest(first second highest)) Sales 20k in first and last but got 30k in 5
+Entertainment(2nd Highest(first 2nd lowest then second highest)) Sales 20-25k in first 2 then 40+k in 5th and then came down
+Mobiledevices(Highest) 20k in 3rd, 25k in 4th, 30+k in 5th, 50+k in 6th and 60k in 7th

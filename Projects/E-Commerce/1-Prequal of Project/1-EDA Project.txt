@@ -1,0 +1,160 @@
+#importing libraries
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import warnings
+from scipy import stats
+
+warnings.filterwarnings("ignore")
+pd.set_option("display.max_columns",None)
+pd.set_option("display.max_colwidth",None)
+pd.set_option("display.float_format","{:,.2f}".format)
+
+print("goal to find the most selling category")
+
+#importing data set
+df = pd.read_csv(r"G:\Pakistan Largest Ecommerce Dataset.csv", low_memory = False)
+
+#Removing all missing rows and columns from the data
+df.dropna(how = "all", inplace = True)
+df.columns
+df.drop(['Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23',
+       'Unnamed: 24', 'Unnamed: 25'], axis = 1, inplace = True)
+
+#Renaming Columns that aren't named good
+df.columns
+df = df.rename(columns={
+"status":"order_status",
+"sku":"product_id",
+"qty_ordered":"quantity",
+"grand_total":"total_price",
+"category_name_1":"category",
+"discount_amount":"discount",
+"Working Date":"working_date",
+"MV":"market_value",
+"Customer ID":"customer_id",
+"BI Status":"bi_status",
+"MV":"market_value",
+"Year":"year",
+"Month":"month",
+"Customer Since":"customer_since",
+"M-Y":"month_year",
+"FY":"financial_year"
+})
+
+#Removing Duplicates
+df.duplicated().sum()
+
+#Fixing Formats
+df["created_at"]= pd.to_datetime(df["created_at"])
+df["customer_since"]= pd.to_datetime(df["customer_since"])
+df["month_year"]= pd.to_datetime(df["month_year"])
+
+#Changing names of unique values if they are not understandable or good
+df["category"].value_counts()
+df["category"] = df["category"].replace(r"\N", "Others")
+
+#filling Missing values
+df.isna().sum()
+df['order_status']= df['order_status'].fillna(df["order_status"].mode()[0])
+df['product_id']= df['product_id'].fillna(df["product_id"].mode()[0])
+df['category']= df['category'].fillna(df["category"].mode()[0])
+df['customer_since']= df['customer_since'].fillna(df["customer_since"].mode()[0])
+df['customer_id']= df['customer_id'].fillna(df["customer_id"].mode()[0])
+df['sales_commission_code'] = df['sales_commission_code'].fillna(df["sales_commission_code"].mode()[0])
+
+#handling same variables of the data set
+df["order_status"].value_counts()
+df["order_status"] = df["order_status"].replace("received", "complete")
+df["order_status"] = df["order_status"].replace("paid", "complete")
+df["order_status"] = df["order_status"].replace("closed", "canceled")
+df["order_status"] = df["order_status"].replace("fraud", "canceled")
+df["order_status"] = df["order_status"].replace("order_refunded", "refund")
+df["order_status"] = df["order_status"].replace("exchange", "refund")
+df["order_status"] = df["order_status"].replace("processing", "pending")
+df["order_status"] = df["order_status"].replace("pending_paypal", "pending")
+df["order_status"] = df["order_status"].replace("cod", "pending")
+#Using Raw cause it gives error other wise
+df["order_status"] = df["order_status"].replace(r"\N", "pending")
+df["order_status"] = df["order_status"].replace("payment_review", "pending")
+df["order_status"] = df["order_status"].replace("holded", "pending")
+
+
+
+#Handling Outliers
+#df.loc[df["order_status"] == "refund", "quantity"].max()
+#304 is the highest
+#df.loc[df["order_status"] == "complete", "quantity"].max()
+#1000 is the highest
+
+#z_scores = stats.zscore(df['total_price'])
+#outliers = df[abs(z_scores) > 3]
+#print(outliers)
+
+outliers = df[(df["month_year"]>= "2018-03-01")&(df["month_year"]<="2018-07-01")]
+#plotting outliers
+palette = ({
+"Others":"red",
+"Computing":"cyan",
+"Entertainment":"gray",
+"Appliances":"black",
+"Mobiles & Tablets":"green",
+"Men's Fashion":"orange",
+"Women's Fashion":"pink",
+"Superstore":"blue",
+"Beauty & Grooming":"purple",
+"Health & Sports":"navy",
+"Home & Living":"brown",
+"Soghaat":"lime",
+"Kids & Baby":"teal",
+"School & Education":"brown",
+"Books":"yellow"
+})
+sns.lineplot(x = "month_year", y = "total_price", data = outliers, hue = "category",palette= palette, marker = "o")
+plt.title("abnormal sales in March")
+plt.xticks(rotation = 45)
+plt.grid(axis = "y")
+plt.legend(
+fontsize = 7.2
+)
+plt.show()
+
+
+print("This is the time when sales of things reached to there peak")
+print("Just cause of Eid, Category 'others'(bangles and Henna), reached out max in quantity")
+print("In terms of Price, 'Mobile Devices' were at the top, cause of the latest technology")
+print("Appliances(lowest) Sales ~20k from 3-7")
+print("computing(2nd lowest(first second highest)) Sales 20k in first and last but got 30k in 5")
+print("Entertainment(2nd Highest(first 2nd lowest then second highest)) Sales 20-25k in first 2 then 40+k in 5th and then came down")
+print("Mobile Devices(Highest) 20k in 3rd, 25k in 4th, 30+k in 5th, 50+k in 6th and 60k in 7th")
+
+
+print("these are all with negative values and order status like canceled and everything")
+print("lets start doing with seprate each to get more of a good view of the data set for outliers")
+
+outliers1 = outliers.groupby(["category", "order_status"]).agg({
+"price":"sum",
+"quantity":"sum",
+"total_price":"sum",
+"discount":"sum"
+}).reset_index()
+
+appliances = outliers1[outliers1['category']== "Appliances"].reset_index()
+mobiles = outliers1[outliers1['category']== "Mobiles & Tablets"].reset_index()
+entertainment = outliers1[outliers1['category']== "Entertainment"].reset_index()
+computing = outliers1[outliers1['category']== "Computing"].reset_index()
+
+appliances.drop(["index"], axis = 1, inplace = True)
+mobiles.drop(["index"], axis = 1, inplace = True)
+entertainment.drop(["index"], axis = 1, inplace = True)
+computing.drop(["index"], axis = 1, inplace = True)
+
+print("Plotting Graphs")
+sns.barplot(x= "order_status", y = "total_price", data=appliances, palette= "dark:red")
+plt.title("Status of Appliances over the High Era")
+plt.show()
+
+print("the value of cancelled is of the charts lets do it without it for once, to get a clear picture of the others")
+appliances = appliances[~(appliances['order_status']== "canceled")]
+appliances

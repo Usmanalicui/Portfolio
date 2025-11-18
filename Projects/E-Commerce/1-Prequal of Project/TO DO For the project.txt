@@ -1,0 +1,35 @@
+Divide the data set into two categories
+Find most selling category on the bases of events and normality
+group them also
+add both of em and then look again and compare
+look how many values have been gone left and right cancelled and completed and all
+Find reasons for everythin that happened, Research try to find more datasets related to it asap
+Remove most selling categories again from the graph then look again and see what happens with it 
+if it works out hten start analyizing them
+
+other wise start working on other things and do count them  in the same project
+make correlation heat map for the categories and the type of payment method used
+
+
+
+
+
+
+
+
+Alr New Thingy Now
+So bascially what we are going to do
+
+
+
+
+
+
+Things 
+total sales
+total completed and cancelled sales
+difference between them
+total completed and cancelled sales in price
+difference between them
+total complete and cancelled sales in quantity
+difference between them

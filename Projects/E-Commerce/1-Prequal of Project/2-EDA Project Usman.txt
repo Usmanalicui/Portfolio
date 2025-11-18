@@ -1,0 +1,74 @@
+#importing libraries
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+#importing data set
+df = pd.read_csv(r"G:\Pakistan Largest Ecommerce Dataset.csv", low_memory = False)
+
+#Data Preparation
+df
+
+#Dropping Columns and rows
+df.dropna(how = 'all', inplace = True)
+df.drop(['Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23',
+       'Unnamed: 24', 'Unnamed: 25'], axis = 1, inplace = True)
+df.drop(['item_id','created_at',
+	'sales_commission_code','Customer ID'], axis = 1, inplace = True)
+df.loc[:, ['increment_id', 'Working Date','BI Status', ' MV ', 'Year', 'Month', 'Customer Since', 'M-Y', 'FY']]
+
+
+#Checking duplicates
+df.duplicated().sum()
+
+#Checking null values
+df.isna().sum()
+
+#checking unique values per column
+df.nunique()
+
+#checking values how much each variable has in category_name_1
+df["category_name_1"].value_counts()
+
+plt.pie([59721,41496 ,34011 , 115710,52413 , 26504, 92221, 16494,  7850,29218 ,26326 , 15933, 43613 ,17502 , 1870 ,3478 , ],
+	labels = ["Women's Fashion", 'Beauty & Grooming', 'Soghaat',
+       'Mobiles & Tablets', 'Appliances', 'Home & Living',
+       "Men's Fashion", 'Kids & Baby', '\\N', 'Others', 'Entertainment',
+       'Computing', 'Superstore', 'Health & Sports', 'Books',
+       'School & Education'],
+	autopct= "%1.1f%%", startangle= 90)
+plt.show()
+
+plt.figure(figsize= (10, 8))
+sns.barplot(x = [59721,41496 ,34011 , 115710,52413 , 26504, 92221, 16494,  7850,29218 ,26326 , 15933, 43613 ,17502 , 1870 ,3478 , ],
+	y = ["Women's Fashion", 'Beauty & Grooming', 'Soghaat',
+       'Mobiles & Tablets', 'Appliances', 'Home & Living',
+       "Men's Fashion", 'Kids & Baby', '\\N', 'Others', 'Entertainment',
+       'Computing', 'Superstore', 'Health & Sports', 'Books',
+       'School & Education']
+	)
+plt.grid(axis = "x" )
+plt.show()
+
+df.groupby("status").agg({
+	"price":"sum",
+	"qty_ordered":"sum",
+	"grand_total":"sum",
+	"increment_id":"count",
+	"discount_amount":"sum"
+})
+
+pd.set_option("display.float_format", "{:,.2f}".format)
+
+df.groupby("status").agg({
+	"price":"sum",
+	"qty_ordered":"sum",
+	"grand_total":"sum",
+	"increment_id":"count",
+	"discount_amount":"sum",
+	"category_name_1": lambda x: x.value_counts().head(3).to_dict()
+})
+
+pd.set_option("display.max_columns",None)
+pd.set_option("display.max_colwidth",None)

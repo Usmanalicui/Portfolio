@@ -1,0 +1,47 @@
+extra = 
+df2 = df.groupby("order_status").agg({
+"price" : "sum", 
+"quantity":"sum",
+"total_price":"sum",
+"discount":"sum",
+"category":lambda x: x.value_counts().head(3).to_dict(),
+"payment_method":lambda x: x.value_counts().head(3).to_dict()
+}
+)
+
+
+#plotting to see outliers 
+plt.figure(figsize= (10, 8))
+sns.scatterplot(x = "total_price", y = "category", data = df)
+plt.xlim(-131994, 17888000)
+plt.show()
+
+#Plot line plot for the whole data set
+monthly_summary = df.groupby(['month_year', 'category']).agg({
+    'quantity': 'sum',
+    'total_price': 'sum'
+}).reset_index()
+
+monthly_summary.head()
+
+#plot starts from here
+plt.figure(figsize=(12,6))
+for cat in monthly_summary['category'].unique():
+    subset = monthly_summary[monthly_summary['category'] == cat]
+    plt.plot(subset['month_year'], subset['quantity'], marker='o', label=cat)
+
+plt.xlabel("Month-Year")
+plt.ylabel("Quantity Sold")
+plt.title("Monthly Quantity Trend by Category")
+plt.legend()
+plt.show()
+
+others
+outliers = df[(df["month_year"]>= "2018-03-01")&(df["month_year"]<="2018-06-01")]
+outliers1 = outliers.groupby(["category", "order_status"]).agg({
+"total_price":"sum",
+"quantity":"sum",
+"discount":"sum"
+}).reset_index()
+outliers1
+
